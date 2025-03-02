@@ -16,30 +16,17 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   Gesture,
   GestureDetector,
-  GestureHandlerRootView,
-  PanGestureHandler
+  GestureHandlerRootView
 } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
-  useSharedValue,
-  withSpring
+  useSharedValue
 } from "react-native-reanimated";
-import ViewShot from "react-native-view-shot";
+import ViewShot, { captureRef } from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
-import * as Sharing from "expo-sharing";
-import * as ImageManipulator from "expo-image-manipulator";
-import * as IntentLauncher from "expo-intent-launcher";
 import * as Linking from "expo-linking";
-import {
-  X,
-  Save,
-  Instagram,
-  Trash2,
-  Pencil,
-  Sticker,
-  Check,
-  ArrowLeft
-} from "lucide-react-native";
+import * as IntentLauncher from "expo-intent-launcher";
+import { X, Save, Instagram, Pencil, Sticker } from "lucide-react-native";
 
 // Sticker data
 const STICKERS = [
@@ -83,14 +70,12 @@ type Sticker = {
 };
 
 export default function EditorScreen() {
-  const { uri, fromGallery } = useLocalSearchParams<{
+  const { uri } = useLocalSearchParams<{
     uri: string;
-    fromGallery?: string;
   }>();
   const router = useRouter();
   const viewShotRef = useRef<ViewShot>(null);
   const [caption, setCaption] = useState("");
-  const [isDrawing, setIsDrawing] = useState(false);
   const [drawingPaths, setDrawingPaths] = useState<DrawingPath[]>([]);
   const [currentPath, setCurrentPath] = useState<DrawingPath>({
     path: [],
@@ -98,7 +83,6 @@ export default function EditorScreen() {
     width: 5
   });
   const [stickers, setStickers] = useState<Sticker[]>([]);
-  const [showStickers, setShowStickers] = useState(false);
   const [activeSticker, setActiveSticker] = useState<string | null>(null);
   const [drawingColor, setDrawingColor] = useState("#FF3B30");
   const [drawingMode, setDrawingMode] = useState(false);
@@ -151,7 +135,10 @@ export default function EditorScreen() {
   const savePhoto = async () => {
     if (viewShotRef.current) {
       try {
-        const capturedUri = await viewShotRef.current.capture();
+        const capturedUri = await captureRef(viewShotRef, {
+          format: "png",
+          quality: 1
+        });
 
         // Save to media library
         const asset = await MediaLibrary.createAssetAsync(capturedUri);
@@ -176,7 +163,10 @@ export default function EditorScreen() {
   const shareToInstagram = async () => {
     if (viewShotRef.current) {
       try {
-        const capturedUri = await viewShotRef.current.capture();
+        const capturedUri = await captureRef(viewShotRef, {
+          format: "png",
+          quality: 1
+        });
 
         // Check if Instagram is installed
         const instagramURL = "instagram://story";
@@ -255,8 +245,8 @@ export default function EditorScreen() {
 
     // Pan gesture for moving the sticker
     const panGesture = Gesture.Pan().onUpdate((event) => {
-      translateX.value += event.changeX;
-      translateY.value += event.changeY;
+      translateX.value += event.translationX;
+      translateY.value += event.translationY;
     });
 
     // Pinch gesture for scaling the sticker
@@ -299,7 +289,7 @@ export default function EditorScreen() {
     useEffect(() => {
       sticker.x = translateX.value;
       sticker.y = translateY.value;
-    }, [translateX.value, translateY.value]);
+    }, [translateX.value, translateY.value, sticker]);
 
     return (
       <GestureDetector gesture={composedGestures} key={sticker.id}>
@@ -347,7 +337,7 @@ export default function EditorScreen() {
       <GestureHandlerRootView style={styles.canvasContainer}>
         <GestureDetector gesture={handleDrawingGesture}>
           <ViewShot ref={viewShotRef} style={styles.canvas}>
-            <Image source={{ uri }} style={styles.backgroundImage} />
+            <Image source={{ uri: uri }} style={styles.backgroundImage} />
 
             {/* Render drawing paths */}
             <View style={StyleSheet.absoluteFill}>
