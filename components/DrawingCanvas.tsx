@@ -1,3 +1,5 @@
+//components/DrawingCanvas.tsx
+
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";

@@ -1,3 +1,5 @@
+//constants/Stickers.ts
+
 // Sample stickers from Unsplash (replace with your actual sticker URLs)
 export const STICKERS = [
   {

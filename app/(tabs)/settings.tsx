@@ -1,3 +1,5 @@
+//app/(tabs)/settings.tsx
+
 import {
   StyleSheet,
   View,

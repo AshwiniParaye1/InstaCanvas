@@ -1,3 +1,5 @@
+//app/(tabs)/gallary.tsx
+
 import { useState, useEffect } from "react";
 import {
   StyleSheet,

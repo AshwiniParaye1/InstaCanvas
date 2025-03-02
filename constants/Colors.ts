@@ -1,3 +1,5 @@
+//constants/Colors.ts
+
 const tintColorLight = "#6366f1";
 const tintColorDark = "#818cf8";
 

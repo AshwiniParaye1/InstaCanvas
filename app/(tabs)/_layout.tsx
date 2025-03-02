@@ -1,3 +1,5 @@
+//app/(tabs)/_layout.tsx
+
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 import { Camera, Image, Settings } from "lucide-react-native";

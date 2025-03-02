@@ -1,4 +1,5 @@
-// components/Sticker.js
+// components/Sticker.tsx
+
 import React from "react";
 import { Animated, PanResponder, Image, StyleSheet } from "react-native";
 

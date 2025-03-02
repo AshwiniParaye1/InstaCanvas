@@ -1,3 +1,5 @@
+//app/camera.tsx
+
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
 import {
